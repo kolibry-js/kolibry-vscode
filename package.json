@@ -1,0 +1,179 @@
+{
+  "publisher": "nyxb",
+  "name": "kolibry",
+  "preview": true,
+  "displayName": "Kolibry",
+  "version": "0.0.0",
+  "packageManager": "pnpm@8.11.0",
+  "description": "Kolibry support for VS Code",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kolibry-js/kolibry-vscode"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/index.js",
+  "icon": "res/logo.png",
+  "engines": {
+    "vscode": "^1.52.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "kolibry.prev",
+        "category": "Kolibry",
+        "title": "Go to previous slide",
+        "icon": "$(chevron-up)"
+      },
+      {
+        "command": "kolibry.next",
+        "category": "Kolibry",
+        "title": "Go to next slide",
+        "icon": "$(chevron-down)"
+      },
+      {
+        "command": "kolibry.focus-side-panel",
+        "category": "Kolibry",
+        "title": "Focus side panel",
+        "icon": "res/logo-mono.svg"
+      },
+      {
+        "command": "kolibry.move-up",
+        "category": "Kolibry",
+        "title": "Move slide up",
+        "icon": "$(triangle-up)"
+      },
+      {
+        "command": "kolibry.move-down",
+        "category": "Kolibry",
+        "title": "Move slide down",
+        "icon": "$(triangle-down)"
+      },
+      {
+        "command": "kolibry.preview-refresh",
+        "category": "Kolibry",
+        "title": "Preview Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "kolibry.markdown-to-html",
+        "category": "Kolibry",
+        "title": "Convert current selection to HTML"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "kolibry-enabled && resourceLangId == markdown",
+          "command": "kolibry.prev",
+          "group": "navigation"
+        },
+        {
+          "when": "kolibry-enabled && resourceLangId == markdown",
+          "command": "kolibry.next",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "kolibry.move-up",
+          "when": "view =~ /kolibry-slides/",
+          "group": "inline@1"
+        },
+        {
+          "command": "kolibry.move-down",
+          "when": "view =~ /kolibry-slides/",
+          "group": "inline@1"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "kolibry.preview-refresh",
+          "when": "view =~ /kolibry-preview/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Kolibry",
+      "properties": {
+        "kolibry.enabled": {
+          "type": "boolean",
+          "scope": "window",
+          "description": "Force enable extension",
+          "default": false
+        },
+        "kolibry.annotations": {
+          "type": "boolean",
+          "scope": "window",
+          "description": "Display annotations for slides markdown files",
+          "default": true
+        },
+        "kolibry.port": {
+          "type": "number",
+          "scope": "window",
+          "description": "The port of Kolibry server",
+          "default": 3030
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kolibry",
+          "title": "Kolibry",
+          "icon": "res/logo-mono.svg",
+          "when": "kolibry-enabled"
+        }
+      ]
+    },
+    "views": {
+      "kolibry": [
+        {
+          "id": "kolibry-slides",
+          "name": "Slides",
+          "when": "kolibry-enabled"
+        },
+        {
+          "type": "webview",
+          "id": "kolibry-preview",
+          "name": "Preview",
+          "when": "kolibry-enabled"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts --external=vscode",
+    "dev": "nyxr build --watch",
+    "vscode:prepublish": "nyxr build",
+    "lint": "eslint .",
+    "publish": "vsce publish --no-dependencies",
+    "pack": "vsce package --no-dependencies",
+    "release": "bumping && nyxr publish"
+  },
+  "devDependencies": {
+    "@nyxb/nyxi": "^0.0.31",
+    "@nyxb/utils": "^0.0.3",
+    "@kolibry/parser": "^0.0.10",
+    "@kolibry/types": "^0.0.10",
+    "@types/markdown-it": "^12.2.3",
+    "@types/node": "^18.0.3",
+    "@types/vscode": "^1.52.0",
+    "bumping": "^9.2.1",
+    "eslint": "^8.54.0",
+    "got": "^11.8.2",
+    "markdown-it": "^13.0.1",
+    "pkg-up": "^3.1.0",
+    "tsup": "^6.1.3",
+    "types-package-json": "^2.0.39",
+    "typescript": "^4.7.4",
+    "vsce": "^2.9.2"
+  }
+}

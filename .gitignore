@@ -5,3 +5,4 @@ node_modules
 .vscode/.as-fs
 .DS_Store
 dist
+.env

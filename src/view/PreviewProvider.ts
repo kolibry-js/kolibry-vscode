@@ -7,72 +7,72 @@ import { getCurrentSlideIndex } from '../slides'
 import { isDarkTheme } from '../utils'
 
 export class PreviewProvider implements WebviewViewProvider {
-  public static readonly viewId = 'kolibry-preview'
-  public view: WebviewView | undefined
+   public static readonly viewId = 'kolibry-preview'
+   public view: WebviewView | undefined
 
-  public updateColor() {
-    if (!this.view)
-      return
+   public updateColor() {
+      if (!this.view)
+         return
 
-    this.view.webview.postMessage({
-      target: 'kolibry',
-      type: 'css-vars',
-      vars: {
-        '--kolibry-slide-container-background': 'transparent',
-      },
-    })
-    this.view.webview.postMessage({
-      target: 'kolibry',
-      type: 'color-schema',
-      color: isDarkTheme() ? 'dark' : 'light',
-    })
-  }
+      this.view.webview.postMessage({
+         target: 'kolibry',
+         type: 'css-vars',
+         vars: {
+            '--kolibry-slide-container-background': 'transparent',
+         },
+      })
+      this.view.webview.postMessage({
+         target: 'kolibry',
+         type: 'color-schema',
+         color: isDarkTheme() ? 'dark' : 'light',
+      })
+   }
 
-  public updateSlide(idx: number) {
-    if (!this.view)
-      return
+   public updateSlide(idx: number) {
+      if (!this.view)
+         return
 
-    this.view.webview.postMessage({ target: 'kolibry', type: 'navigate', no: idx + 1 })
-    this.updateColor()
-  }
+      this.view.webview.postMessage({ target: 'kolibry', type: 'navigate', no: idx + 1 })
+      this.updateColor()
+   }
 
-  public async refresh() {
-    const editor = window.activeTextEditor
-    if (!editor || editor.document !== ctx.doc)
-      return
+   public async refresh() {
+      const editor = window.activeTextEditor
+      if (!editor || editor.document !== ctx.doc)
+         return
 
-    if (!this.view)
-      return
+      if (!this.view)
+         return
 
-    const idx = getCurrentSlideIndex(editor)
+      const idx = getCurrentSlideIndex(editor)
 
-    this.view.webview.options = {
-      enableScripts: true,
-      localResourceRoots: [ctx.ext.extensionUri],
-    }
-
-    this.view.webview.onDidReceiveMessage(async ({ command }) => {
-      if (command === 'config-port') {
-        const port = await window.showInputBox({
-          placeHolder: 'Server port',
-        })
-        if (port && !isNaN(+port)) {
-          await setConfig('port', +port || 3030)
-          this.refresh()
-        }
+      this.view.webview.options = {
+         enableScripts: true,
+         localResourceRoots: [ctx.ext.extensionUri],
       }
-    })
-    
-    let serverAddr = `http://127.0.0.1:${config.port}/`
 
-    const indexUrl = `${serverAddr}index.html`
-    const resolvedBody = await got.get(indexUrl, { responseType: 'text', resolveBodyOnly: true }).catch(() => null)
-    if (!resolvedBody) {
-      serverAddr = `http://[::1]:${config.port}/`
-    }
-    const url = `${serverAddr}${idx}?embedded=true`
+      this.view.webview.onDidReceiveMessage(async ({ command }) => {
+         if (command === 'config-port') {
+            const port = await window.showInputBox({
+               placeHolder: 'Server port',
+            })
+            if (port && !Number.isNaN(+port)) {
+               await setConfig('port', +port || 3030)
+               this.refresh()
+            }
+         }
+      })
 
-    this.view.webview.html = `
+      let serverAddr = `http://127.0.0.1:${config.port}/`
+
+      const indexUrl = `${serverAddr}index.html`
+      const resolvedBody = await got.get(indexUrl, { responseType: 'text', resolveBodyOnly: true }).catch(() => null)
+      if (!resolvedBody)
+         serverAddr = `http://[::1]:${config.port}/`
+
+      const url = `${serverAddr}${idx}?embedded=true`
+
+      this.view.webview.html = `
 <head>
   <meta
     http-equiv="Content-Security-Policy"
@@ -110,14 +110,14 @@ code {
 </body>
 `
 
-    try {
-      await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
-    }
-    catch {
-      return
-    }
+      try {
+         await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
+      }
+      catch {
+         return
+      }
 
-    this.view.webview.html = `
+      this.view.webview.html = `
 <head>
   <meta
     http-equiv="Content-Security-Policy"
@@ -149,13 +149,13 @@ code {
 </body>
 `
 
-    setTimeout(() => this.updateColor(), 10)
-    setTimeout(() => this.updateColor(), 300)
-    setTimeout(() => this.updateColor(), 1000)
-  }
+      setTimeout(() => this.updateColor(), 10)
+      setTimeout(() => this.updateColor(), 300)
+      setTimeout(() => this.updateColor(), 1000)
+   }
 
-  public async resolveWebviewView(webviewView: WebviewView) {
-    this.view = webviewView
-    this.refresh()
-  }
+   public async resolveWebviewView(webviewView: WebviewView) {
+      this.view = webviewView
+      this.refresh()
+   }
 }

@@ -1,20 +1,20 @@
 {
-   "version": "0.2.0",
-   "configurations": [
-       {
-           "name": "Extension",
-           "type": "extensionHost",
-           "request": "launch",
-           "runtimeExecutable": "${execPath}",
-           "args": [
-               "--extensionDevelopmentPath=${workspaceFolder}",
-               "--folder-uri", 
-               "file:///Users/nyxb/projects/github_packages/cc"
-           ],
-           "outFiles": [
-               "${workspaceFolder}/dist/**/*.js"
-           ],
-           "preLaunchTask": "npm: dev"
-       }
-   ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--folder-uri",
+        "file:///Users/nyxb/projects/github_packages/cc"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ],
+      "preLaunchTask": "npm: dev"
+    }
+  ]
 }
